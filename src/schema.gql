@@ -1,0 +1,54 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type User {
+  id: Int!
+  email: String!
+  todos: [Todo!]
+}
+
+type Todo {
+  id: Int!
+  content: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  userId: Int!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type AuthMessage {
+  token: String!
+  user: User!
+}
+
+type Query {
+  todo(id: Int!): Todo!
+  user(id: Int!): User!
+}
+
+type Mutation {
+  createTodo(createTodoInput: CreateTodoInput!): Todo!
+  updateTodo(updateTodoInput: UpdateTodoInput!): Todo!
+  removeTodo(id: Int!): Todo!
+  login(input: LoginInput!): AuthMessage!
+  signUp(input: LoginInput!): AuthMessage!
+}
+
+input CreateTodoInput {
+  content: String!
+}
+
+input UpdateTodoInput {
+  id: Float!
+  content: String!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}
