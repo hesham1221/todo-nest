@@ -1,6 +1,4 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { CreateUserInput } from './dto/create-user.input';
-import { UpdateUserInput } from './dto/update-user.input';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 import { InjectModel } from '@nestjs/sequelize';
@@ -54,14 +52,6 @@ export class UserService {
   }
 
   findOne(id: number) {
-    return this.UserModel.findOne({where : {id}});
-  }
-
-  update(id: number, updateUserInput: UpdateUserInput) {
-    return `This action updates a #${id} user`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+    return this.UserModel.findOne({where : {id} , include:[Todo]});
   }
 }
