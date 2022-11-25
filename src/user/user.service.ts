@@ -50,7 +50,7 @@ export class UserService {
   }
 
   findAll() {
-    return this.UserModel.findAll();
+    return this.UserModel.findAll({include : [Todo]});
   }
 
   findOne(id: number) {
