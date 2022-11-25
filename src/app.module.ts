@@ -20,6 +20,7 @@ import { UserModule } from './user/user.module';
       playground: true,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       context : ({req}) => ({headers : req.headers}),
+      introspection: true
     }),
     SequelizeModule.forRoot({
       dialect: 'postgres',

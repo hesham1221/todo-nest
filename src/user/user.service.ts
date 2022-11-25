@@ -18,9 +18,6 @@ export class UserService {
             token: jwt.sign(
               { email: user.email, id: user.id },
               process.env.SECRET,
-              {
-                expiresIn: '30m',
-              },
             ),
             user : user,
           };
