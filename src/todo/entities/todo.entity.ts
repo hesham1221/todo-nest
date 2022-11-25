@@ -1,6 +1,6 @@
 import { ObjectType, Field, Int} from '@nestjs/graphql';
 
-import { AutoIncrement, Column, CreatedAt, DataType, ForeignKey, Model, PrimaryKey, Table, Unique, UpdatedAt  } from 'sequelize-typescript';
+import { AutoIncrement, BelongsTo, Column, CreatedAt, DataType, Default, ForeignKey, Model, PrimaryKey, Table, Unique, UpdatedAt  } from 'sequelize-typescript';
 import { User } from 'src/user/entities/user.entity';
 
 
@@ -17,6 +17,11 @@ export class Todo extends Model<Todo> {
   @Field()
   content :string
 
+  @Default(false)
+  @Column
+  @Field(() => Boolean)
+  isCompleted : boolean
+
   @CreatedAt
   @Column({ type: DataType.DATE })
   @Field(() => Date)
@@ -27,10 +32,14 @@ export class Todo extends Model<Todo> {
   @Field(()=> Date)
   updatedAt: Date;
 
+
   @ForeignKey(() => User)
   @Column
-  @Field(() => Int)
   userId: number;
+
+  @BelongsTo(() => User)
+  @Field(() => User)
+  user : User
 
 }
 

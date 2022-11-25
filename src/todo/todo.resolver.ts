@@ -5,6 +5,7 @@ import { CreateTodoInput } from './dto/create-todo.input';
 import { UpdateTodoInput } from './dto/update-todo.input';
 import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from 'src/jwt.auth.guard';
+import { todoMessage } from './dto/removeTodo.output';
 
 @Resolver(() => Todo)
 export class TodoResolver {
@@ -22,7 +23,6 @@ export class TodoResolver {
     return this.todoService.findAll(context);
   }
 
-  @UseGuards(new AuthGuard())
   @Query(() => Todo, { name: 'todo' })
   findOne(@Args('id', { type: () => Int }) id: number) {
     return this.todoService.findOne(id);
@@ -30,13 +30,21 @@ export class TodoResolver {
 
   @UseGuards(new AuthGuard())
   @Mutation(() => Todo)
-  updateTodo(@Args('updateTodoInput') updateTodoInput: UpdateTodoInput) {
-    return this.todoService.update(updateTodoInput.id, updateTodoInput);
+  updateTodo(@Context()context ,@Args('updateTodoInput') updateTodoInput: UpdateTodoInput) {
+    return this.todoService.update(context,updateTodoInput.id, updateTodoInput);
   }
 
   @UseGuards(new AuthGuard())
   @Mutation(() => Todo)
-  removeTodo(@Args('id', { type: () => Int }) id: number) {
-    return this.todoService.remove(id);
+  setCompleted(@Context()context , @Args('id')id : number){
+    return this.todoService.setCompleted(context,id)
+  }
+
+  @UseGuards(new AuthGuard())
+  @Mutation(() => todoMessage)
+  removeTodo(@Context()context ,@Args('id', { type: () => Int }) id: number) {
+    return this.todoService.remove(id , context);
   }
 }
+
+

@@ -1,6 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { User } from 'src/user/entities/user.entity';
 import { CreateTodoInput } from './dto/create-todo.input';
+import { todoMessage } from './dto/removeTodo.output';
 import { UpdateTodoInput } from './dto/update-todo.input';
 import { Todo } from './entities/todo.entity';
 
@@ -12,19 +14,36 @@ export class TodoService {
   }
 
   findAll(context) {
-    return this.todoModel.findAll({where : {userId : context.user.id}});
+    return this.todoModel.findAll({where : {userId : context.user.id} , include : [User]});
   }
 
-  findOne(id: number) {
-    return this.todoModel.findOne({where : {id }});
+  async findOne(id: number) {
+    const todo = await this.todoModel.findOne({where : {id },include:[User]});
+    if(!todo) throw new NotFoundException
+    return todo
   }
 
-  update(id: number, updateTodoInput: UpdateTodoInput) {
+  async update(id: number,context, updateTodoInput: UpdateTodoInput) {
+    const todo = await this.todoModel.findOne({where : {id, userId : context.user.id },include:[User]});
+    if(!todo) throw new NotFoundException
     const {content} = updateTodoInput
     return this.todoModel.update({content},{where : {id}});
   }
 
-  remove(id: number) {
-    return this.todoModel.destroy({where : {id}});
+  async remove(id: number , context):Promise<todoMessage> {
+    const todo = await this.todoModel.findOne({where : {id , userId : context.user.id},include:[User]});
+    if(!todo) throw new NotFoundException
+     await this.todoModel.destroy({where : {id}});
+     return {
+        message : `Todo ${id} removed successfully`,
+        code : 200
+     }
+  }
+
+  async setCompleted(context ,id:number){
+    const todo = await this.todoModel.findOne({where : {id , userId : context.user.id},include:[User]});
+    if(!todo) throw new NotFoundException
+    await this.todoModel.update({isCompleted : true},{where : {id}})
+    return todo
   }
 }
