@@ -28,6 +28,7 @@ type AuthMessage {
 
 type Query {
   todo(id: Int!): Todo!
+  users: [User!]!
   user(id: Int!): User!
 }
 
